@@ -169,7 +169,12 @@ def _add_markup(fmt, thm, value):
                           r'\label{%s} '%attrs.id))
         endtags = RawBlock('tex', r'\end{%s}' % env)
         content = value[1][0]
-        ret = [start]+content+[endtags]
+
+        # If the definition list has another clause then treat this as a proof
+        proof = []
+        if len(value[1]) > 1:
+            proof = [RawBlock('tex', r'\begin{proof}')] + value[1][1] + [RawBlock('tex',r'\end{proof}')]
+        ret = [start]+content+proof+[endtags]
 
     elif fmt in ('html', 'html5', 'epub', 'epub2', 'epub3'):
         if isinstance(targets[attrs.id].num, int):  # Numbered reference
@@ -459,7 +464,7 @@ def main(stdin=STDIN, stdout=STDOUT, stderr=STDERR):
                                                 cleveref, False,
                                                 ['UNUSED'],
                                                 ['UNUSED'])
-            
+
             process_all_refs = [process_refs, replace_refs]
         else:
             # Replace each theorem type separately (to insert the correct names)
