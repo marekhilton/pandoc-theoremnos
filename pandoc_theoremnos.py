@@ -207,8 +207,14 @@ def _add_markup(fmt, thm, value):
         title.insert(0, Str('%s' % name))
         title.append(Str(':'))
         content = value[1][0]
+
+        # If present create proof section, should tidy this up
+        proof = []
+        if len(value[1]) > 1:
+            proof = [RawBlock('html', '</dd><dt>Proof</dt><dd>')] + value[1][1]
+
         endtags = RawBlock('html', '</dd></dl>')
-        ret = [outer, head, Plain(title), endhead] + content + [endtags]
+        ret = [outer, head, Plain(title), endhead] + content + proof + [endtags]
 
     # To do: define default behaviour
 
